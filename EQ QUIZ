@@ -1,0 +1,244 @@
+import React, { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+
+const quizData = [
+  {
+    section: "Self-Awareness",
+    questions: [
+      {
+        question: "How do you typically respond after receiving critical feedback from a manager?",
+        answers: [
+          { text: "I welcome the feedback, thank them, and create an action plan.", value: 5 },
+          { text: "I reflect on the feedback and identify areas to grow.", value: 4 },
+          { text: "I feel attacked but stay quiet.", value: 2 },
+          { text: "I get defensive and explain why they’re wrong.", value: 1 },
+          { text: "I try to accept it but struggle to apply it.", value: 3 }
+        ]
+      },
+      {
+        question: "You realize you’ve made a mistake on a team project. What’s your first reaction?",
+        answers: [
+          { text: "Own the mistake publicly and take full responsibility.", value: 5 },
+          { text: "Try to hide it and hope no one notices.", value: 1 },
+          { text: "Blame others or external circumstances.", value: 2 },
+          { text: "Acknowledge the mistake and begin correcting it.", value: 4 },
+          { text: "Feel ashamed but stay quiet.", value: 3 }
+        ]
+      },
+      {
+        question: "How well do you understand what triggers stress or frustration in you at work?",
+        answers: [
+          { text: "I know my triggers and actively manage them.", value: 5 },
+          { text: "I have a general sense but don’t track it regularly.", value: 3 },
+          { text: "I notice I get frustrated but can’t pinpoint why.", value: 2 },
+          { text: "I don’t really think about it.", value: 1 },
+          { text: "I’m aware and sometimes take steps to manage it.", value: 4 }
+        ]
+      }
+    ]
+  },
+  {
+    section: "Self-Regulation",
+    questions: [
+      {
+        question: "A coworker says something that annoys you in a meeting. What do you do?",
+        answers: [
+          { text: "Interrupt and tell them off.", value: 1 },
+          { text: "Stay composed, redirect the conversation constructively.", value: 5 },
+          { text: "Remain calm and revisit the issue privately.", value: 4 },
+          { text: "Stay quiet but vent later.", value: 3 },
+          { text: "Roll your eyes or make a sarcastic comment.", value: 2 }
+        ]
+      },
+      {
+        question: "When you feel overwhelmed by deadlines, how do you handle it?",
+        answers: [
+          { text: "Pause, prioritize, and ask for support if needed.", value: 4 },
+          { text: "Use calming techniques and manage time proactively.", value: 5 },
+          { text: "Complain to others without taking action.", value: 2 },
+          { text: "Push through, often with stress.", value: 3 },
+          { text: "Procrastinate or freeze up.", value: 1 }
+        ]
+      },
+      {
+        question: "You receive an unexpected change to a project you've worked hard on. How do you react?",
+        answers: [
+          { text: "Adapt after taking a moment to process.", value: 4 },
+          { text: "Argue and refuse to adapt.", value: 1 },
+          { text: "Sulk or disengage.", value: 2 },
+          { text: "Embrace change and seek ways to optimize the new direction.", value: 5 },
+          { text: "Comply but feel resentful.", value: 3 }
+        ]
+      }
+    ]
+  },
+  {
+    section: "Motivation",
+    questions: [
+      {
+        question: "What drives you to do your best work?",
+        answers: [
+          { text: "Passion for your work and a sense of purpose.", value: 5 },
+          { text: "Fear of being reprimanded.", value: 1 },
+          { text: "Avoiding failure.", value: 2 },
+          { text: "A desire to grow and achieve.", value: 4 },
+          { text: "Meeting expectations.", value: 3 }
+        ]
+      },
+      {
+        question: "You hit a roadblock in a project. How do you respond?",
+        answers: [
+          { text: "Reframe it as a challenge and push forward with enthusiasm.", value: 5 },
+          { text: "Give up or wait for someone else to fix it.", value: 1 },
+          { text: "Keep going but feel discouraged.", value: 3 },
+          { text: "Seek solutions and stay persistent.", value: 4 },
+          { text: "Do the bare minimum to move forward.", value: 2 }
+        ]
+      },
+      {
+        question: "How often do you set goals for your professional growth?",
+        answers: [
+          { text: "I’m proactive, set ambitious goals, and stay driven.", value: 5 },
+          { text: "I don’t think about it.", value: 1 },
+          { text: "Occasionally, but don’t follow through.", value: 2 },
+          { text: "I set goals but struggle to stay on track.", value: 3 },
+          { text: "I set clear, realistic goals and monitor my progress.", value: 4 }
+        ]
+      }
+    ]
+  },
+  {
+    section: "Empathy",
+    questions: [
+      {
+        question: "A teammate is unusually quiet during meetings. What do you do?",
+        answers: [
+          { text: "Ignore it—it’s not your problem.", value: 1 },
+          { text: "Check in with them privately.", value: 4 },
+          { text: "Assume they’re just lazy or unprepared.", value: 2 },
+          { text: "Create space in the meeting for their voice and follow up personally.", value: 5 },
+          { text: "Wonder why but don’t act on it.", value: 3 }
+        ]
+      },
+      {
+        question: "A colleague is going through a difficult time personally. How do you support them?",
+        answers: [
+          { text: "Avoid them—it’s awkward.", value: 1 },
+          { text: "Say something generic like ‘hang in there.’", value: 3 },
+          { text: "Pretend nothing is happening.", value: 2 },
+          { text: "Offer to listen or help with workload.", value: 4 },
+          { text: "Actively show compassion, respect privacy, and follow up.", value: 5 }
+        ]
+      },
+      {
+        question: "How do you respond when someone has a different opinion in a group discussion?",
+        answers: [
+          { text: "Ask clarifying questions and seek to understand.", value: 5 },
+          { text: "Listen, but stick strictly to your view.", value: 3 },
+          { text: "Tune them out.", value: 2 },
+          { text: "Try to prove them wrong.", value: 1 },
+          { text: "Consider their perspective respectfully.", value: 4 }
+        ]
+      }
+    ]
+  },
+  {
+    section: "Social Skills",
+    questions: [
+      {
+        question: "How do you usually communicate in team settings?",
+        answers: [
+          { text: "I dominate or withdraw.", value: 1 },
+          { text: "I say only what’s necessary.", value: 2 },
+          { text: "I communicate clearly, listen well, and build team synergy.", value: 5 },
+          { text: "I contribute but don’t engage deeply.", value: 3 },
+          { text: "I collaborate and listen actively.", value: 4 }
+        ]
+      },
+      {
+        question: "How do you handle conflict with a coworker?",
+        answers: [
+          { text: "Seek resolution with openness and empathy.", value: 5 },
+          { text: "Avoid them entirely.", value: 1 },
+          { text: "Talk behind their back.", value: 2 },
+          { text: "Keep it professional but hold a grudge.", value: 3 },
+          { text: "Address it calmly and respectfully.", value: 4 }
+        ]
+      },
+      {
+        question: "How often do you express appreciation to your coworkers?",
+        answers: [
+          { text: "Consistently and intentionally as part of my leadership.", value: 5 },
+          { text: "Only when prompted.", value: 2 },
+          { text: "Almost never—it’s not necessary.", value: 1 },
+          { text: "Often, in both private and public ways.", value: 4 },
+          { text: "Occasionally, when something stands out.", value: 3 }
+        ]
+      }
+    ]
+  }
+];
+
+const getFeedback = (score) => {
+  if (score >= 61) return "💡 Emotionally Intelligent Leader – You’re highly attuned, resilient, and a natural team builder.";
+  if (score >= 46) return "🔄 Emotionally Aware and Growing – You’ve got a solid base and room to refine your strengths.";
+  if (score >= 30) return "🌱 Developing EQ Skills – You’re learning! Focus on self-awareness and self-regulation first.";
+  return "🧭 Time to Explore EQ – It’s never too late. Understanding yourself better will change your work and life.";
+};
+
+export default function EmotionalIntelligenceQuiz() {
+  const [step, setStep] = useState(0);
+  const [score, setScore] = useState(0);
+  const [completed, setCompleted] = useState(false);
+
+  const currentSection = quizData[Math.floor(step / 3)];
+  const currentQuestion = currentSection.questions[step % 3];
+  const progress = (step / (quizData.length * 3)) * 100;
+
+  const handleAnswer = (value) => {
+    const nextStep = step + 1;
+    setScore(score + value);
+    if (nextStep >= quizData.length * 3) {
+      setCompleted(true);
+    } else {
+      setStep(nextStep);
+    }
+  };
+
+  if (completed) {
+    return (
+      <div className="max-w-xl mx-auto mt-10 p-4 text-center">
+        <h2 className="text-2xl font-bold mb-4">Your EQ Score: {score}/75</h2>
+        <p className="text-lg">{getFeedback(score)}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-xl mx-auto mt-10">
+      <Card className="p-6">
+        <CardContent>
+          <h3 className="text-xl font-semibold mb-4">{currentSection.section}</h3>
+          <p className="mb-6">{currentQuestion.question}</p>
+          <div className="space-y-3">
+            {currentQuestion.answers
+              .sort(() => Math.random() - 0.5)
+              .map((answer, index) => (
+                <Button
+                  key={index}
+                  variant="outline"
+                  className="w-full text-left"
+                  onClick={() => handleAnswer(answer.value)}
+                >
+                  {answer.text}
+                </Button>
+              ))}
+          </div>
+          <Progress value={progress} className="mt-6" />
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
